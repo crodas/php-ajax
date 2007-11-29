@@ -1,0 +1,23 @@
+#summary One-sentence summary of this page.
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+PHPAJAX is a framework to speed up the developing of ajax with php. Also you don't need to know javascript.
+This wiki file will show some basic examples, explaining step by step what is happending.
+
+= Details =
+
+For use PHPAJAX you need to think in class, know what to read, and what and where to show the result. You need to inherit the class phpajax and override some methods:
+   * *Main* (mandatory): Here you need to write the main of you ajax applications. Only output funcion could be used here.
+   * *Loading* (optional): Here you define what to-do while tbe ajax request is processing.
+   * *input* (optional): Here you define what information from client should be send to the server. Here only input functions could be used.
+
+=Input Functions=
+
+    * *aread* ( string htmlobject ): This functions tells that the information of _htmlobject_ (which is its id) must be sent in the ajax request.
+
+=Output Functions=
+     * *aprint* ( string htmlobject, string text[, boolean override=true] ): Prints _text_ into _htmlobject_, the previous content of _htmlobject_ is delete if _override_ is equal to true. 
+     * *ashow* ( string htmlobject ): Turn on the visibility of an _htmlobject_ 
+     * *ahide* ( string htmlobject ): Turn off the visibility of an _htmlobject_
