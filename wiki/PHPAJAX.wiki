@@ -1,5 +1,5 @@
-#summary One-sentence summary of this page.
 #labels Featured,Phase-Implementation
+#This is the introduction of the project
 
 = Introduction =
 
