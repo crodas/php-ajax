@@ -61,24 +61,42 @@ class phpajax {
      *  @access public
      */
     function init() {
-        $f = & $_POST['phpajax'];
-        if ( isset($f)  ) {
-            $input = json_decode(stripslashes($f),true);
-            if (! ( isset($input['fnc']) && isset($input['version']) )) return;
-            /* create object */
-            $obj = new $input['fnc'];
-            /* set variable */
-            $obj->setVar($input);
-            /* execute */
-            $obj->main();
-            /************************************************************/
-            $s = new stdClass;
-            /* aprint */
-            if ( isSet($GLOBALS['PHPAJAXINPUTPRINT']) )
-                foreach($GLOBALS['PHPAJAXINPUTPRINT'] as $k => $v) {
-                    $s->aprint[]=$k;
-                    $s->aprint[]=$v;
-                }
+			$f = & $_POST['phpajax'];
+			/**
+			 *	The actual request is not an ajax
+			 *	request.
+			 */
+			if ( !isset($f)  ) return;
+			
+			/**
+			 *	Now we see if the ajax  request is valid,
+			 *	and if it cames thought prototype or an iframe.
+			 *	If this came thought iframe this is probabily
+			 *	because we're reciving a file. Thought iframe
+			 *	also the response is diferrent, we need to send
+			 * javascript code, and inside the javascript our json
+			 *	information.
+			 */
+			if (trim($f) == "iframe") {
+				$s = new stdClass;
+				
+			} else {
+				$input = json_decode(stripslashes($f),true);
+				if (! ( isset($input['fnc']) && isset($input['version']) )) return;
+				/* create object */
+				$obj = new $input['fnc'];
+				/* set variable */
+				$obj->setVar($input);
+				/* execute */
+				$obj->main();
+				/************************************************************/
+				$s = new stdClass;
+				/* aprint */
+				if ( isSet($GLOBALS['PHPAJAXINPUTPRINT']) )
+					foreach($GLOBALS['PHPAJAXINPUTPRINT'] as $k => $v) {
+						$s->aprint[]=$k;
+						$s->aprint[]=$v;
+					}	
             /* ahide - ashow */
             if ( isSet($GLOBALS['PHPAJAXINPUTSHOWHIDE']) )
                 foreach($GLOBALS['PHPAJAXINPUTSHOWHIDE'] as $v)

@@ -25,13 +25,15 @@
 */
 
 VERSION="PHPAJAX_1_0"
+var formIdCnt = 0;
 
 function phpajax_execute(url,fnc, params, callback) {
     var rta = {"fnc":fnc, "version":VERSION };
 
     /* Read variables */
     for(i=0; i < params.length; i++) {
-        eval("rta." +params[i]+ "= getObjValue(params[i]); " );
+		variable = getObjValue(params[i]);
+        eval("rta." +params[i]+ "= variable; " );
     }
 
     var success  = function(t) {
@@ -54,6 +56,57 @@ function phpajax_execute(url,fnc, params, callback) {
             method:'post',  onSuccess:success, onFailure:failure, parameters: "phpajax=" + rta.toJSONString()
         }
     ) 
+}
+
+function phpajax_iframe_execute(url, fnc, params, callback, divname) {
+	/* Getting information about the div container. */
+	maincontainer = getObject(divname);
+	
+	/* creating a container */
+	container = document.createElement("div");
+	container.id = "container" + (++formIdCnt);
+	
+	/* creating a form */
+	form = document.createElement("form");
+	form.id = "form" + formIdCnt;
+	
+	/* adding information into the form */
+	div = document.createElement("input");
+	div.name = "div";
+	div.value = container.id;
+	form.appendChild( div.cloneNode(false) );
+	
+	magic = document.createElement("input");
+	magic.name = "phpajax";
+	magic.value = "iframe";
+	form.appendChild( div.cloneNode(false) );
+	
+	var cntFiles = 0;
+	for(i=0; i < params.length; i++) {
+		tmp = getObject( params[1] );
+		if (tmp.type.lower() == "file") {
+			name = document.createElement("input");
+			name.id = tmp;
+			input = tmp.cloneNode(false);
+			
+		} else {
+			input = document.createElement("input");
+			input.value = getObjValue(params[i]);
+		}
+		form.appendChild ( input.cloneNode(false) );
+	}
+	
+	/* adding into the div-container */
+	container.appendChild( form.cloneNode(true) );
+	
+	/* adding into the div-maincontainer */
+	maincontainer.appendChild( container.cloneNode(true) );
+	
+	/* get form */
+	formSubmit = getObject( form.id );
+	
+	/* submit a form */
+	formSubmit.submit();
 }
 
 function process(rta) {
