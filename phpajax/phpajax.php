@@ -268,7 +268,8 @@ function phpajax_js($dir="./") {
         }
 
     }
-    echo "</script>\n";
+    echo "</script>\n"; 
+	 echo "<div id='phpajax-div'></div>";
 }
 /**
  *  Print JS code
