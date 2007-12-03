@@ -26,7 +26,7 @@ class file_handler extends phpajax {
        ashow("loading");
     } 
 
-    function main() { yet
+    function main() { 
         alert("The file ". $this->file1." is uploaded ");
        //do something with  
        //$_FILE["file1"];
