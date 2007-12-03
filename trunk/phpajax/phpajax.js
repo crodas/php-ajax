@@ -32,7 +32,11 @@ function phpajax_execute(url,fnc, params, callback) {
 
     /* Read variables */
     for(i=0; i < params.length; i++) {
+		if ( getObject(params[i]).type   && getObject(params[i]).type == "file") 
+			return phpajax_iframe_execute(url,fnc,params,callback);
+			
 		variable = getObjValue(params[i]);
+		
         eval("rta." +params[i]+ "= variable; " );
     }
 
@@ -58,49 +62,61 @@ function phpajax_execute(url,fnc, params, callback) {
     ) 
 }
 
-function phpajax_iframe_execute(url, fnc, params, callback, divname) {
+function phpajax_iframe_execute(url, fnc, params, callback) {
+	alert("hello");
 	/* Getting information about the div container. */
-	maincontainer = getObject(divname);
+	maincontainer = getObject('phpajax-div');
 	
 	/* creating a container */
 	container = document.createElement("div");
 	container.id = "container" + (++formIdCnt);
 	
+	destiny = document.createElement("iframe");
+	destiny.name = "iframe" + formIdCnt;
+	destiny.id = destiny.name;
+	maincontainer.appendChild( destiny );
+	
 	/* creating a form */
 	form = document.createElement("form");
 	form.id = "form" + formIdCnt;
+	form.method = "POST";
+	form.target = destiny.name;
 	
 	/* adding information into the form */
 	div = document.createElement("input");
 	div.name = "div";
 	div.value = container.id;
-	form.appendChild( div.cloneNode(false) );
+	form.appendChild( div );
 	
 	magic = document.createElement("input");
-	magic.name = "phpajax";
+	magic.name = "iframe";
 	magic.value = "iframe";
-	form.appendChild( div.cloneNode(false) );
+	form.appendChild( magic );
 	
 	var cntFiles = 0;
+	var accInputs = {"fnc":fnc, "version":VERSION };
 	for(i=0; i < params.length; i++) {
-		tmp = getObject( params[1] );
-		if (tmp.type.lower() == "file") {
-			name = document.createElement("input");
-			name.id = tmp;
-			input = tmp.cloneNode(false);
-			
-		} else {
-			input = document.createElement("input");
-			input.value = getObjValue(params[i]);
-		}
-		form.appendChild ( input.cloneNode(false) );
+		tmp = getObject( params[i] );
+		if (tmp.type == "file") 
+			form.appendChild(  tmp.cloneNode(false) );
+		
+		/* adding the information */
+		eval( "accInputs." + params[i] + " = getObjValue(params[i]) ");
 	}
 	
+	vars = document.createElement("input");
+	vars.name = "phpajax";
+	vars.id = vars.name;
+
+	vars.value = accInputs.toJSONString();
+	
+	form.appendChild( vars );
+	
 	/* adding into the div-container */
-	container.appendChild( form.cloneNode(true) );
+	container.appendChild( form );
 	
 	/* adding into the div-maincontainer */
-	maincontainer.appendChild( container.cloneNode(true) );
+	maincontainer.appendChild( container );
 	
 	/* get form */
 	formSubmit = getObject( form.id );

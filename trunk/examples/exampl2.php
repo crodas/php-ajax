@@ -35,7 +35,7 @@ require("../phpajax/phpajax.php");
  *  @author Cesar D. Rodas
  *  @package PHP-Ajax-Examples
  */
-class example1 extends phpajax {
+class example2 extends phpajax {
     /**
      *  Input
      *
@@ -105,7 +105,7 @@ class example1_showsource extends phpajax {
 
 /* Initiliaze php ajax*/
 phpajax::init();
-
+print_r($_POST);
 ?>
 <html>
 <head>
@@ -117,10 +117,8 @@ phpajax::init();
 Cargando...
 </div>
 
-    A = <input type="text" name="input1" id="input1"><br/>
-    B = <input type="text" name="input2" id="input2"><br/>
-    A * B =  <span id="output1"></span><br/>
-    <input type="submit" value="Click me" onclick="example1()">
+    <input type="file" name="file1" id="file1"><br/>
+   <a href="javascript:example2()">Upload file</a>
 <hr>
 <input type="submit" value="show source" onclick="example1_showsource()"><br />
 <div id="source"></div>
