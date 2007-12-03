@@ -1,6 +1,4 @@
 #labels Featured,Phase-Implementation
-
-
 = Introduction =
 
 PHPAJAX is a framework to speed up the developing of ajax with php. Also you don't need to know javascript.
@@ -15,7 +13,7 @@ For use PHPAJAX you need to think in class, know what to read, and what and wher
 
 =Input Functions=
 
-    * *aread* ( string htmlobject ): This functions tells that the information of _htmlobject_ (which is its id) must be sent in the ajax request.
+    * *aread* ( string htmlobject ): This functions tells that the information of _htmlobject_ (which is its id) must be sent in the ajax request. The _htmlobject_ also can be an FILE input field, in this case, the file will be uploaded to PHP. Read [HowPHPAjaxWorksForUploadFiles How upload files with PHP AJAX] for more information.
 
 =Output Functions=
      * *aprint* ( string htmlobject, string text[, boolean override=true] ): Prints _text_ into _htmlobject_, the previous content of _htmlobject_ is delete if _override_ is equal to true. 
