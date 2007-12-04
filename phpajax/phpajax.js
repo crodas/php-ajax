@@ -63,7 +63,6 @@ function phpajax_execute(url,fnc, params, callback) {
 }
 
 function phpajax_iframe_execute(url, fnc, params, callback) {
-	alert("hello");
 	/* Getting information about the div container. */
 	maincontainer = getObject('phpajax-div');
 	
@@ -74,20 +73,31 @@ function phpajax_iframe_execute(url, fnc, params, callback) {
 	destiny = document.createElement("iframe");
 	destiny.name = "iframe" + formIdCnt;
 	destiny.id = destiny.name;
-	maincontainer.appendChild( destiny );
+	
 	
 	/* creating a form */
 	form = document.createElement("form");
 	form.id = "form" + formIdCnt;
 	form.method = "POST";
+    form.enctype="multipart/form-data" ;
 	form.target = destiny.name;
 	
+    form.appendChild( destiny );
+    
 	/* adding information into the form */
 	div = document.createElement("input");
 	div.name = "div";
 	div.value = container.id;
 	form.appendChild( div );
 	
+    
+    callback_form = document.createElement("input");
+	callback_form.name = "callback";
+	callback_form.value = callback;
+	form.appendChild( callback_form );
+
+    
+    
 	magic = document.createElement("input");
 	magic.name = "iframe";
 	magic.value = "iframe";
@@ -95,13 +105,19 @@ function phpajax_iframe_execute(url, fnc, params, callback) {
 	
 	var cntFiles = 0;
 	var accInputs = {"fnc":fnc, "version":VERSION };
+    
 	for(i=0; i < params.length; i++) {
 		tmp = getObject( params[i] );
-		if (tmp.type == "file") 
-			form.appendChild(  tmp.cloneNode(false) );
 		
 		/* adding the information */
 		eval( "accInputs." + params[i] + " = getObjValue(params[i]) ");
+        if (tmp.type == "file") {
+            tmp1 = tmp.cloneNode(false);
+			tmp1.name = "phpajax_" + tmp1.name;
+            tmp1.id = tmp1.name;
+ 
+            form.appendChild(  tmp1  );
+        }
 	}
 	
 	vars = document.createElement("input");
@@ -118,11 +134,8 @@ function phpajax_iframe_execute(url, fnc, params, callback) {
 	/* adding into the div-maincontainer */
 	maincontainer.appendChild( container );
 	
-	/* get form */
-	formSubmit = getObject( form.id );
-	
 	/* submit a form */
-	formSubmit.submit();
+	setTimeout("getObject('" + form.id +"').submit(); ", 1000);
 }
 
 function process(rta) {
