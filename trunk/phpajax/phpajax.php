@@ -108,8 +108,16 @@ class phpajax {
                     $s->alert[]=$v;
 
             /************************************************************/
+            if ( isset($_POST['iframe']) ) echo  "<script> f = ";
             echo json_encode($s);
+            if ( isset($_POST['iframe']) )  {
+                echo "; parent. process(f); b = parent.getObject('".$_POST["div"]."'); b.innerHTML = '';";
+                if ( isset($_POST['callback']) and strlen($_POST['callback']) > 2 ) 
+                    echo "parent.".$_POST['callback']."();";
+                echo "</script>";
+            }
             exit;
+            
         }
     }
     /**
@@ -269,7 +277,7 @@ function phpajax_js($dir="./") {
 
     }
     echo "</script>\n"; 
-	 echo "<div id='phpajax-div'></div>";
+	 echo "<div id='phpajax-div' style='display: none'></div>";
 }
 /**
  *  Print JS code

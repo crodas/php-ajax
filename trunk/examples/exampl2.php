@@ -57,29 +57,14 @@ class example2 extends phpajax {
          *  "input" is referenced here as local variable
          *  for made easy in the code time.
          */
-        $a = & $this->input1;
-        $b = & $this->input2;
+        $a = & $this->file1;
 
-        /* Sleep awhile for show the loading */
-        sleep(10);
-
-
-        if ( !is_numeric($a) ) {
-            alert("A ($a) must be numeric");
-            ahide("output1");
-            /* stop ajax */
-            return;
+        @mkdir("up");
+        if(move_uploaded_file($_FILES['phpajax_file1']['tmp_name'],"up/". basename( $_FILES['phpajax_file1']['name']) ) ) {
+            alert("The file ".  basename( $_FILES['phpajax_file1']['name']). " has been uploaded");
+        } else{
+            alert("There was an error uploading the file, please try again!");
         }
-
-        if ( !is_numeric($b) ) {
-            alert("A ($b) must be numeric");
-            ahide("output1");
-            /* stop ajax */
-            return;
-        }
-
-        aprint('output1', $a*$b);
-        ahide("ashow");
 
     }
 }
@@ -105,7 +90,7 @@ class example1_showsource extends phpajax {
 
 /* Initiliaze php ajax*/
 phpajax::init();
-print_r($_POST);
+
 ?>
 <html>
 <head>
