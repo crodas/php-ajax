@@ -1,8 +1,10 @@
 <?php
 /*
 ***************************************************************************
-*   Copyright (C) 2007-2008 by PHP Ajax Team                              *
-*   info@phpajax.org                                                      *
+*   Copyright (C) 2007-2008 by Sixdegrees                                 *
+*   cesar@sixdegrees.com.br                                               *
+*   "Working with freedom"                                                *
+*   http://www.sixdegrees.com.br                                          *
 *                                                                         *
 *   Permission is hereby granted, free of charge, to any person obtaining *
 *   a copy of this software and associated documentation files (the       *
@@ -26,6 +28,8 @@
 */
 
 define('PHPAJAX_DIR',dirname(__FILE__));
+require(PHPAJAX_DIR."/defines.php");
+require(PHPAJAX_DIR."/jsphp.php");
 
 /**
  *  PHP Ajax
@@ -34,9 +38,8 @@ define('PHPAJAX_DIR',dirname(__FILE__));
  *
  *
  *  @package PHP-Ajax
- *  @author Cesar D. Rodas <saddor@gmail.com>
+ *  @author Cesar D. Rodas <cesar@sixdegress.com.br>
  *  @copyright PHP Ajax
- *  @abstract
  *  @version 1.0
  */
 class phpajax {
@@ -47,7 +50,7 @@ class phpajax {
     function phpajax() {
     }
 
-    
+
     function setVar($name) {
         foreach($name as $k => $v)
             $this->$k = $v;
@@ -61,64 +64,60 @@ class phpajax {
      *  @access public
      */
     function init() {
-			$f = & $_POST['phpajax'];
-			/**
-			 *	The actual request is not an ajax
-			 *	request.
-			 */
-			if ( !isset($f)  ) return;
-			
-			/**
-			 *	Now we see if the ajax  request is valid,
-			 *	and if it cames thought prototype or an iframe.
-			 *	If this came thought iframe this is probabily
-			 *	because we're reciving a file. Thought iframe
-			 *	also the response is diferrent, we need to send
-			 * javascript code, and inside the javascript our json
-			 *	information.
-			 */
-			if (trim($f) == "iframe") {
-				$s = new stdClass;
-				
-			} else {
-				$input = json_decode(stripslashes($f),true);
-				if (! ( isset($input['fnc']) && isset($input['version']) )) return;
-				/* create object */
-				$obj = new $input['fnc'];
-				/* set variable */
-				$obj->setVar($input);
-				/* execute */
-				$obj->main();
-				/************************************************************/
-				$s = new stdClass;
-				/* aprint */
-				if ( isSet($GLOBALS['PHPAJAXINPUTPRINT']) )
-					foreach($GLOBALS['PHPAJAXINPUTPRINT'] as $k => $v) {
-						$s->aprint[]=$k;
-						$s->aprint[]=$v;
-					}	
-            /* ahide - ashow */
-            if ( isSet($GLOBALS['PHPAJAXINPUTSHOWHIDE']) )
-                foreach($GLOBALS['PHPAJAXINPUTSHOWHIDE'] as $v)
-                    $s->ahideshow[]=$v;
-                
-            /* alert  */
-            if ( isSet($GLOBALS['PHPAJAXALERT']) )
-                foreach($GLOBALS['PHPAJAXALERT'] as $v)
-                    $s->alert[]=$v;
-
-            /************************************************************/
-            if ( isset($_POST['iframe']) ) echo  "<script> f = ";
-            echo json_encode($s);
-            if ( isset($_POST['iframe']) )  {
-                echo "; parent. process(f); b = parent.getObject('".$_POST["div"]."'); b.innerHTML = '';";
-                if ( isset($_POST['callback']) and strlen($_POST['callback']) > 2 ) 
-                    echo "parent.".$_POST['callback']."();";
-                echo "</script>";
-            }
-            exit;
+            $f = & $_POST['phpajax'];
+            /**
+             *  The actual request is not an ajax
+             *  request.
+             */
+            if ( !isset($f)  ) return;
             
-        }
+            /**
+             *  Now we see if the ajax  request is valid,
+             *  and if it cames thought prototype or an iframe.
+             *  If this came thought iframe this is probabily
+             *  because we're reciving a file. Thought iframe
+             *  also the response is diferrent, we need to send
+             * javascript code, and inside the javascript our json
+             *  information.
+             */
+     
+                $input = json_decode(stripslashes($f),true);
+                if (! ( isset($input['fnc']) && isset($input['version']) )) return;
+                /* create object */
+                $obj = new $input['fnc'];
+                /* set variable */
+                $obj->setVar($input);
+                /* execute */
+                $obj->main();
+                /************************************************************/
+                $s = new stdClass;
+                /* aprint */
+                if ( isSet($GLOBALS[AJAX_PRINT]) )
+                    foreach($GLOBALS[AJAX_PRINT] as $k => $v) {
+                        $s->aprint[]=$k;
+                        $s->aprint[]=$v;
+                    }
+                /* ahide - ashow */
+                if ( isSet($GLOBALS[AJAX_SHOW_HIDE]) )
+                    foreach($GLOBALS[AJAX_SHOW_HIDE] as $v)
+                        $s->ahideshow[]=$v;
+
+                /* alert  */
+                if ( isSet($GLOBALS[AJAX_ALERT]) )
+                    foreach($GLOBALS[AJAX_ALERT] as $v)
+                        $s->alert[]=$v;
+
+                /************************************************************/
+                if ( isset($_POST['iframe']) ) echo  "<script> f = ";
+                echo json_encode($s);
+                if ( isset($_POST['iframe']) )  {
+                    if ( isset($_POST['callback']) and strlen($_POST['callback']) > 2 )
+                        echo ";parent.".$_POST['callback']."()";
+                    echo ";parent.process(f); b = parent.getObject('".$_POST["div"]."'); b.innerHTML = '';";
+                    echo "</script>";
+                }
+                exit;
+        
     }
     /**
      *  Ajax Main
@@ -147,66 +146,6 @@ class phpajax {
 
 }
 
-/**
- *  Ajax Read
- *
- *  Transform the input required into javascript code.
- *
- *  @access private
- */
-function aread($p) {
-    $t = & $GLOBALS['PHPAJAXINPUT'];
-    $t .= "\tinput[i++] = '$p';\n";
-}
-
-/**
- *  Ajax Print
- *
- *  Prints the result in a HTML object in the client
- *  side.
- *
- *  @param string $dst HTML object where print
- *  @param string $txt Text to print
- */
-function aprint($dst,$txt) {
-    $v = & $GLOBALS['PHPAJAXINPUTPRINT'][$dst];
-    $v.= $txt;
-}
-
-/**
- *  Show a message box in the client.
- *
- *  @param string $text String to show
- */
-function alert($txt) {
-     $v = & $GLOBALS['PHPAJAXALERT'];
-     $v[] = $txt;
-}
-
-/**
- *  Ajax Hide
- *
- *  Hide a HTML object.
- *
- *  @param string $obj Object "id".
- */
-function ahide($obj) {
-   $v  = & $GLOBALS['PHPAJAXINPUTSHOWHIDE'];
-   $v[]= "ahide('$obj');";
-
-}
-
-/**
- *  Ajax Show
- *
- *  Show a HTML object.
- *
- *  @param string $obj Object "id".
- */
-function ashow($obj) {
-    $v  = & $GLOBALS['PHPAJAXINPUTSHOWHIDE'];
-    $v[]= "ashow('$obj');";
-}
 
 
 /**
@@ -233,16 +172,17 @@ function phpajax_js($dir="./") {
         $obj = new $name;
         if ( !is_subclass_of( $obj ,  'phpajax') ) continue;
         echo "function $name() {\n";
-        imprimir("var i=0;");
-        imprimir("var input = new Array();");
+        print_source("var i=0;");
+        print_source("var args = {$name}.arguments;");
+        print_source("var input = new Array();");
         /* inputs */
-        $GLOBALS['PHPAJAXINPUT']='';
+        $GLOBALS[AJAX_INPUT]='';
         $obj->input();
-        echo $GLOBALS['PHPAJAXINPUT'];
+        echo $GLOBALS[AJAX_INPUT];
         /* end */
         /* loading */
-        $v = & $GLOBALS['PHPAJAXINPUTSHOWHIDE'];
-        $print = & $GLOBALS['PHPAJAXINPUTPRINT'];
+        $v = & $GLOBALS[AJAX_SHOW_HIDE];
+        $print = & $GLOBALS[AJAX_PRINT];
         $v = array();
         $print = array();
 
@@ -251,15 +191,15 @@ function phpajax_js($dir="./") {
         if (  count($v) > 0 ) {
             $callback="{$name}_loaded";
             foreach($print as $k => $value)
-                imprimir("aprint('$k','".js_encode($value)."');");
+                print_source("aprint('$k','".js_encode($value)."');");
 
             foreach($v as $value) {
-                imprimir($value);
+                print_source($value);
             }
         }
         /* end */
         $uri = $_SERVER['REQUEST_URI'];
-        imprimir("phpajax_execute('$uri','$name',input,'$callback');");
+        print_source("phpajax_execute('$uri','$name',input,'$callback');");
         echo "}\n";
         if (  count($v) > 0 ) {
             echo "function $callback() {\n";
@@ -269,22 +209,22 @@ function phpajax_js($dir="./") {
                  *  show in the loading event
                  */
                 if ( substr($value,0,5) == "ashow") {
-                    imprimir(  "ahide".substr($value,5) );
+                    print_source(  "ahide".substr($value,5) );
                 }
             }
             echo "}\n";
         }
 
     }
-    echo "</script>\n"; 
-	 echo "<div id='phpajax-div' style='display: none'></div>";
+    echo "</script>\n";
+    echo "<div id='phpajax-div' style='display: none'></div>";
 }
 /**
  *  Print JS code
  *
  *  @access private
  */
-function imprimir($f) {
+function print_source($f) {
     echo "\t$f\n";
 }
 
@@ -302,6 +242,9 @@ function js_encode($str) {
 if ( !is_callable('json_encode') ) {
     require_once(PHPAJAX_DIR."/JSON.php");
     /**
+     *  JSON Encode for PHP4
+     *
+     *
      *  @access private
      */
     function json_encode($obj) {
@@ -314,6 +257,9 @@ if ( !is_callable('json_encode') ) {
 if ( !is_callable('json_decode') ) {
     require_once(PHPAJAX_DIR."/JSON.php");
     /**
+     *  JSON Decode for PHP4
+     *
+     *
      *  @access private
      */
     function json_decode($obj,$arr=false) {
