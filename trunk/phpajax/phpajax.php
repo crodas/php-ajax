@@ -106,7 +106,10 @@ class phpajax {
                 if ( isSet($GLOBALS[AJAX_ALERT]) )
                     foreach($GLOBALS[AJAX_ALERT] as $v)
                         $s->alert[]=$v;
-
+                /* javascript  */
+                if ( isSet($GLOBALS[AJAX_JS]) )
+                    foreach($GLOBALS[AJAX_JS] as $v)
+                        $s->js[]=$v;
                 /************************************************************/
                 if ( isset($_POST['iframe']) ) echo  "<script> f = ";
                 echo json_encode($s);
