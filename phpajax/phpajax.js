@@ -1,7 +1,9 @@
 /*
 ***************************************************************************
-*   Copyright (C) 2007-2008 by PHP Ajax Team                              *
-*   info@phpajax.org                                                      *
+*   Copyright (C) 2007-2008 by Sixdegrees                                 *
+*   cesar@sixdegrees.com.br                                               *
+*   "Working with freedom"                                                *
+*   http://www.sixdegrees.com.br                                          *
 *                                                                         *
 *   Permission is hereby granted, free of charge, to any person obtaining *
 *   a copy of this software and associated documentation files (the       *
@@ -32,17 +34,16 @@ function phpajax_execute(url,fnc, params, callback) {
 
     /* Read variables */
     for(i=0; i < params.length; i++) {
-		if ( getObject(params[i]).type   && getObject(params[i]).type == "file") 
-			return phpajax_iframe_execute(url,fnc,params,callback);
-			
-		variable = getObjValue(params[i]);
-		
-        eval("rta." +params[i]+ "= variable; " );
+        if ( params[i].source && getObject(params[i].source).type   && getObject(params[i].source).type == "file")
+            return phpajax_iframe_execute(url,fnc,params,callback);
+
+        variable = params[i].value ? params[i].value : getObjValue(params[i].source);
+        
+        eval("rta." + params[i].name + "= variable; " );
     }
 
     var success  = function(t) {
         try {
-            
             elem = eval ( "(" + t.responseText  +")");
 
             if ( callback != '') {
@@ -54,7 +55,7 @@ function phpajax_execute(url,fnc, params, callback) {
             alert(e);
         }
     }
-    var failure  = function(t){ alert(t.responseText); }
+    var failure  = function(t){ alert("Error the ajax request"); }
     var myAjax = new Ajax.Request(url,
         {
             method:'post',  onSuccess:success, onFailure:failure, parameters: "phpajax=" + rta.toJSONString()
@@ -63,79 +64,79 @@ function phpajax_execute(url,fnc, params, callback) {
 }
 
 function phpajax_iframe_execute(url, fnc, params, callback) {
-	/* Getting information about the div container. */
-	maincontainer = getObject('phpajax-div');
-	
-	/* creating a container */
-	container = document.createElement("div");
-	container.id = "container" + (++formIdCnt);
-	
-	destiny = document.createElement("iframe");
-	destiny.name = "iframe" + formIdCnt;
-	destiny.id = destiny.name;
-	
-	
-	/* creating a form */
-	form = document.createElement("form");
-	form.id = "form" + formIdCnt;
-	form.method = "POST";
+    /* Getting information about the div container. */
+    maincontainer = getObject('phpajax-div');
+    
+    /* creating a container */
+    container = document.createElement("div");
+    container.id = "container" + (++formIdCnt);
+    
+    destiny = document.createElement("iframe");
+    destiny.name = "iframe" + formIdCnt;
+    destiny.id = destiny.name;
+    
+    
+    /* creating a form */
+    form = document.createElement("form");
+    form.id = "form" + formIdCnt;
+    form.method = "POST";
     form.enctype="multipart/form-data" ;
-	form.target = destiny.name;
-	
+    form.target = destiny.name;
+    
     form.appendChild( destiny );
     
-	/* adding information into the form */
-	div = document.createElement("input");
-	div.name = "div";
-	div.value = container.id;
-	form.appendChild( div );
-	
+    /* adding information into the form */
+    div = document.createElement("input");
+    div.name = "div";
+    div.value = container.id;
+    form.appendChild( div );
     
+
     callback_form = document.createElement("input");
-	callback_form.name = "callback";
-	callback_form.value = callback;
-	form.appendChild( callback_form );
+    callback_form.name = "callback";
+    callback_form.value = callback;
+    form.appendChild( callback_form );
 
     
     
-	magic = document.createElement("input");
-	magic.name = "iframe";
-	magic.value = "iframe";
-	form.appendChild( magic );
-	
-	var cntFiles = 0;
-	var accInputs = {"fnc":fnc, "version":VERSION };
+    magic = document.createElement("input");
+    magic.name = "iframe";
+    magic.value = "iframe";
+    form.appendChild( magic );
     
-	for(i=0; i < params.length; i++) {
-		tmp = getObject( params[i] );
-		
-		/* adding the information */
-		eval( "accInputs." + params[i] + " = getObjValue(params[i]) ");
-        if (tmp.type == "file") {
+    var cntFiles = 0;
+    var accInputs = {"fnc":fnc, "version":VERSION };
+
+    for(i=0; i < params.length; i++) {
+        tmp = getObject( params[i].source );
+        
+        /* adding the information */
+        eval( "accInputs." + params[i].name + " = params[i].value ? params[i].value : getObjValue(params[i].value) ");
+        if (tmp && tmp.type == "file") {
             tmp1 = tmp.cloneNode(false);
-			tmp1.name = "phpajax_" + tmp1.name;
+            tmp1.name = "phpajax_" + tmp1.name;
             tmp1.id = tmp1.name;
  
             form.appendChild(  tmp1  );
         }
-	}
-	
-	vars = document.createElement("input");
-	vars.name = "phpajax";
-	vars.id = vars.name;
+    }
 
-	vars.value = accInputs.toJSONString();
-	
-	form.appendChild( vars );
-	
-	/* adding into the div-container */
-	container.appendChild( form );
-	
-	/* adding into the div-maincontainer */
-	maincontainer.appendChild( container );
-	
-	/* submit a form */
-	setTimeout("getObject('" + form.id +"').submit(); ", 1000);
+    vars = document.createElement("input");
+    vars.name = "phpajax";
+    vars.id = vars.name;
+
+    vars.value = accInputs.toJSONString();
+    
+    form.appendChild( vars );
+    
+    /* adding into the div-container */
+    container.appendChild( form );
+    
+    /* adding into the div-maincontainer */
+    maincontainer.appendChild( container );
+    
+    /* submit a form */
+    setTimeout("getObject('" + form.id +"').submit(); ", 1000);
 }
 
 function process(rta) {
@@ -173,6 +174,7 @@ function showhide(elem,status) {
         else if (  obj.visibility )
             obj.visibility=status;
     }
+
 }
 
 function aprint(obj_name,txt) {

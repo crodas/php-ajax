@@ -1,8 +1,10 @@
 <?php
 /*
 ***************************************************************************
-*   Copyright (C) 2007-2008 by PHP Ajax Team                              *
-*   info@phpajax.org                                                      *
+*   Copyright (C) 2007-2008 by Sixdegrees                                 *
+*   cesar@sixdegrees.com.br                                               *
+*   "Working with freedom"                                                *
+*   http://www.sixdegrees.com.br                                          *
 *                                                                         *
 *   Permission is hereby granted, free of charge, to any person obtaining *
 *   a copy of this software and associated documentation files (the       *
@@ -24,8 +26,10 @@
 *   OTHER DEALINGS IN THE SOFTWARE.                                       *
 ***************************************************************************
 */
+
 error_reporting(E_ALL);
 require("../phpajax/phpajax.php");
+require("showsource.php");
 
 /**
  *  Example 1
@@ -69,24 +73,7 @@ class example2 extends phpajax {
     }
 }
 
-/**
- *  Example 1, source code
- *
- *  This class shows how to read something from the client
- *  and write something on the brower.
- *
- *  @author Cesar D. Rodas
- *  @package PHP-Ajax-Examples
- */
-class example1_showsource extends phpajax {
-    function main() {
-        aprint('source', highlight_string( file_get_contents(__FILE__),true) );
-    }
-    
-    function loading() {
-        
-    }
-}
+
 
 /* Initiliaze php ajax*/
 phpajax::init();
@@ -105,7 +92,7 @@ Cargando...
     <input type="file" name="file1" id="file1"><br/>
    <a href="javascript:example2()">Upload file</a>
 <hr>
-<input type="submit" value="show source" onclick="example1_showsource()"><br />
+<input type="submit" value="show source" onclick="showsource('example2.php')"><br />
 <div id="source"></div>
 </body>
 </html>

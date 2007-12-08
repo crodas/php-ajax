@@ -1,8 +1,10 @@
 <?php
 /*
 ***************************************************************************
-*   Copyright (C) 2007 by Cesar D. Rodas                                  *
-*   crodas@phpy.org                                                       *
+*   Copyright (C) 2007-2008 by Sixdegrees                                 *
+*   cesar@sixdegrees.com.br                                               *
+*   "Working with freedom"                                                *
+*   http://www.sixdegrees.com.br                                          *
 *                                                                         *
 *   Permission is hereby granted, free of charge, to any person obtaining *
 *   a copy of this software and associated documentation files (the       *

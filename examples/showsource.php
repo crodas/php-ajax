@@ -27,92 +27,25 @@
 ***************************************************************************
 */
 
-error_reporting(E_ALL);
-require("../phpajax/phpajax.php");
-require("showsource.php");
-
 /**
- *  Example 1
+ *  Source code
+ *
  *  This class shows how to read something from the client
  *  and write something on the brower.
- *  
+ *
  *  @author Cesar D. Rodas
  *  @package PHP-Ajax-Examples
  */
-class example1 extends phpajax {
-    /**
-     *  Input
-     *
-     *  Read all what is needed from client.
-     *
-     */
+class showsource extends phpajax {
     function input() {
-        aread("input1");
-        aread("input2");
+        aread('location');
     }
-
-    function loading() {
-        aprint('loading', 'Loading...');
-        ashow('loading');
-    }
-
     function main() {
-        /*
-         *  The variables that was read in the method
-         *  "input" is referenced here as local variable
-         *  for made easy in the code time.
-         */
-        $a = & $this->input1;
-        $b = & $this->input2;
-
-        /* Sleep awhile for show the loading */
-        sleep(3);
-
-
-        if ( !is_numeric($a) ) {
-            alert("A ($a) must be numeric");
-            ahide("output1");
-            /* stop ajax */
+        if ( dirname(__FILE__) != dirname( dirname(__FILE__)."/".$this->location) ) {
+            alert("Hey hey man!, you can't hack me by this way :D");
             return;
         }
-
-        if ( !is_numeric($b) ) {
-            alert("A ($b) must be numeric");
-            ahide("output1");
-            /* stop ajax */
-            return;
-        }
-
-        aprint('output1', $a*$b);
-        aprint('input1', $a);
-        aprint('input2', $b);
-        ahide("ashow");
-
+        aprint('source', highlight_string( file_get_contents($this->location),true) );
     }
 }
-
-
-/* Initiliaze php ajax*/
-phpajax::init();
-
 ?>
-<html>
-<head>
-    <title>Example of how to implement PHP Ajax</title>
-<?php phpajax_js("../phpajax/");?>
-</head>
-<body>
-<div id='loading' style="visibility:hidden;">
-Cargando...
-</div>
-
-    A = <input type="text" name="input1" id="input1"><br/>
-    B = <input type="text" name="input2" id="input2"><br/>
-    A * B =  <span id="output1"></span><br/>
-    <input type="submit" value="Click me" onclick="example1()">
-    <input type="submit" value="40 x 50" onclick="example1(40,50)">
-<hr>
-<input type="submit" value="show source" onclick="showsource('example1.php')"><br />
-<div id="source"></div>
-</body>
-</html>
