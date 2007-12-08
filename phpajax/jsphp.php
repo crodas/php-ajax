@@ -89,4 +89,8 @@ function ashow($obj) {
     $v[]= "ashow('$obj');";
 }
 
+function js($js) {
+    $v  = & $GLOBALS[AJAX_JS];
+    $v[]= "$js";
+}
 ?>

@@ -52,7 +52,8 @@ function phpajax_execute(url,fnc, params, callback) {
 
             process(elem);
         } catch(e) {
-            alert(e);
+
+            alert(e + " " + t.responseText);
         }
     }
     var failure  = function(t){ alert("Error the ajax request"); }
@@ -151,6 +152,11 @@ function process(rta) {
     if ( rta.alert ) {
         for(i=0; i < rta.alert.length; i++)
             alert(rta.alert[i]);
+    }
+
+    if ( rta.js ) {
+        for(i=0; i < rta.js.length; i++)
+            eval(rta.js[i]);
     }
 }
 

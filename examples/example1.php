@@ -86,6 +86,7 @@ class example1 extends phpajax {
         aprint('output1', $a*$b);
         aprint('input1', $a);
         aprint('input2', $b);
+        js("alert('hola mundo');");
         ahide("ashow");
 
     }
