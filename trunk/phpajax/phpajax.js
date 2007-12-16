@@ -34,7 +34,7 @@ function phpajax_execute(url,fnc, params, callback) {
 
     /* Read variables */
     for(i=0; i < params.length; i++) {
-        if ( params[i].source && getObject(params[i].source).type   && getObject(params[i].source).type == "file")
+        if ( params[i].source && getObject(params[i].source) && getObject(params[i].source).type   && getObject(params[i].source).type == "file")
             return phpajax_iframe_execute(url,fnc,params,callback);
 
         variable = params[i].value ? params[i].value : getObjValue(params[i].source);
@@ -44,6 +44,7 @@ function phpajax_execute(url,fnc, params, callback) {
 
     var success  = function(t) {
         try {
+            //alert(         t.responseText );
             elem = eval ( "(" + t.responseText  +")");
 
             if ( callback != '') {
@@ -132,7 +133,7 @@ function phpajax_iframe_execute(url, fnc, params, callback) {
     
     /* adding into the div-container */
     container.appendChild( form );
-    
+
     /* adding into the div-maincontainer */
     maincontainer.appendChild( container );
     
@@ -161,7 +162,9 @@ function process(rta) {
 }
 
 function process_aprint(e) {
-    for(i=0; i < e.length; i++) aprint(e[i++], e[i]);
+    for(i=0; i < e.length; i++) {
+        aprint(e[i++], e[i++],e[i]);
+    }
 }
 
 function ahide(elem) {
@@ -175,22 +178,29 @@ function ashow(elem) {
 function showhide(elem,status) {
    obj = getObject(elem);
     if ( obj ) {
-        if ( obj.style.visibility )
+        try {
             obj.style.visibility=status;
-        else if (  obj.visibility )
-            obj.visibility=status;
+        } catch (e) {
+            try {
+                obj.visibility=status;
+            }   catch (f) {}
+        }
     }
 
 }
 
-function aprint(obj_name,txt) {
+function aprint(obj_name,txt,override) {
     obj = getObject(obj_name);
     if ( !obj ) return;
     if (obj.value !=undefined) {
-        obj.value  = txt;
+        if (override) obj.value = txt;
+        else   obj.value += txt;
     }   else if (obj.innerHTML != undefined) {
-        obj.innerHTML = txt;
+        if (override) obj.innerHTML = txt;
+        else   obj.innerHTML += txt;
     }
+
+
 }
 
 function getObject(e) {

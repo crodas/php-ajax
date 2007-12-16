@@ -49,9 +49,11 @@ function aread($p) {
  *  @param string $dst HTML object where print
  *  @param string $txt Text to print
  */
-function aprint($dst,$txt) {
+function aprint($dst,$txt,$override=true) {
     $v = & $GLOBALS[AJAX_PRINT][$dst];
-    $v.= $txt;
+    if ( !isset($v['text']) )   $v['text']='';
+    $v['text'] .= $txt;
+    $v['override'] =  $override;
 }
 
 /**

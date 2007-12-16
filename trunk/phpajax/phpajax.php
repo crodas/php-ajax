@@ -95,7 +95,8 @@ class phpajax {
                 if ( isSet($GLOBALS[AJAX_PRINT]) )
                     foreach($GLOBALS[AJAX_PRINT] as $k => $v) {
                         $s->aprint[]=$k;
-                        $s->aprint[]=$v;
+                        $s->aprint[]=$v['text'];
+                        $s->aprint[]=$v['override'];
                     }
                 /* ahide - ashow */
                 if ( isSet($GLOBALS[AJAX_SHOW_HIDE]) )
@@ -194,7 +195,7 @@ function phpajax_js($dir="./") {
         if (  count($v) > 0 ) {
             $callback="{$name}_loaded";
             foreach($print as $k => $value)
-                print_source("aprint('$k','".js_encode($value)."');");
+                print_source("aprint('$k','".js_encode($value['text'])."',".($value['override'] ? "true" : "false").");");
 
             foreach($v as $value) {
                 print_source($value);
