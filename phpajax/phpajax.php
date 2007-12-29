@@ -271,8 +271,11 @@ if ( !is_callable('json_decode') ) {
         $var = $json->unserialize( $obj );
         if ( !$arr ) return $var;
         $f = get_object_vars($var);
-        foreach($f as $property)
-            $ret[$property] = $var->$property;
+        $ret = array();
+
+        foreach($f as $key=>$property)
+            $ret[$key] = $property;
+
         return $ret;
     }
 }
