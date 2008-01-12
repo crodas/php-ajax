@@ -26,8 +26,9 @@
 ***************************************************************************
 */
 
-VERSION="PHPAJAX_1_0"
+VERSION="PHPAJAX_1_1"
 var formIdCnt = 0;
+var PHPAJAX_Keys=new Array();
 
 function phpajax_execute(url,fnc, params, callback) {
     var rta = {"fnc":fnc, "version":VERSION };
@@ -215,6 +216,7 @@ function getObject(e) {
     return obj;
 }
 
+
 function getObjValue(e) {
     obj = getObject(e);
     if ( obj && obj.value)
@@ -222,4 +224,89 @@ function getObjValue(e) {
     return "";
 }
 
+function phpajax_keyaction(letters,theaction) {
+    if ( phpajax_keyaction_validate(letters) ) {
+        PHPAJAX_Keys[letters] = theaction;
+        document.onkeydown = phpajax_keyaction_deamon;
+        return true;
+    }
+    return false;
+}
 
+function phpajax_keyaction_deamon(xEvent) {
+    var pressed;
+    
+    f=phpajax_keyaction_speacial_keys(xEvent,false);
+    switch( f ) {
+        case "shift":
+        case "alt":
+        case "ctrl":
+            pressed= f + "+" + phpajax_keyaction_speacial_keys(xEvent,true);
+            break;
+        default:
+            pressed=f;
+    }
+    
+    if ( PHPAJAX_Keys[pressed.toLowerCase()] ) 
+        PHPAJAX_Keys[pressed.toLowerCase()]()
+}
+
+function chr(e) {
+    return String.fromCharCode(e);
+}
+
+function phpajax_keyaction_speacial_keys(e,avoidSpecialKeys) {
+    if ( avoidSpecialKeys )
+        return chr(e.keyCode);
+    var evt = navigator.appName=="Netscape" ? e:event;
+    var ret = 0;
+    var shiftPressed=false; 
+    var altPressed=false;
+    var ctrlPressed=false;
+    if (navigator.appName=="Netscape" && parseInt(navigator.appVersion)==4) {
+        var mString =(e.modifiers+32).toString(2).substring(3,6);
+        shiftPressed=(mString.charAt(0)=="1");
+        ctrlPressed =(mString.charAt(1)=="1");
+        altPressed  =(mString.charAt(2)=="1");
+    } else {
+        shiftPressed= evt.shiftKey;
+        altPressed  = evt.altKey;
+        ctrlPressed = evt.ctrlKey;
+    }
+    
+    if ( shiftPressed ) return "shift" ;
+    if ( altPressed   ) return "alt" ;
+    if ( ctrlPressed  ) return "ctrl" ;
+    return chr(e.keyCode);
+}
+
+function phpajax_keyaction_validate(letters) {
+    if ( letters.length < 1) {
+        return false;
+    }
+    letters=letters.toLowerCase();
+    parts = letters.split("+");
+    switch ( parts.length ) {
+        case 1:
+                if ( parts[0].length == 1 && parts[0] >= 'a' && parts[0] <= 'z')
+                return true;
+        return false;
+        break;
+        case 2:
+                switch ( parts[0] ) {
+                    case "ctrl":
+                    case "shift":
+                    case "alt":
+                            break;
+                    default:
+                            return false;
+                }
+                if ( parts[1].length == 1 && parts[1] >= 'a' && parts[1] <= 'z')
+                return true;
+                return false;
+                break;
+        default:
+                return false;
+    }
+    return false;
+}
