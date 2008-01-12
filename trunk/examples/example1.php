@@ -101,6 +101,10 @@ phpajax::init();
 <head>
     <title>Example of how to implement PHP Ajax</title>
 <?php phpajax_js("../phpajax/");?>
+<script>
+phpajax_keyaction("shift+x", function()  { alert("hoolaa"); }  );
+phpajax_keyaction("shift+b", function()  { example1(); }  );
+</script>
 </head>
 <body>
 <div id='loading' style="visibility:hidden;">
