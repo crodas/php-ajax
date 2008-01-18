@@ -39,16 +39,8 @@ require("showsource.php");
  *  @package PHP-Ajax-Examples
  */
 class chat_put extends phpajax {
-    /**
-     *  Input
-     *
-     *  Read all what is needed from client.
-     *
-     */
-    function input() {
-        aread("text");
-        aread("usr_id");
-    }
+    var $hotkeys=array("ctrl-m","alt-y");
+    var $inputs=array("text","usr_id");
 
     function loading() {
         aprint('loading', 'Sending...');
@@ -58,7 +50,7 @@ class chat_put extends phpajax {
 
     function main() {
         global $mysql;
-
+        
         $a = & $this->text;
 
         # Add what I've chat to the chat-text.
@@ -74,15 +66,11 @@ class chat_put extends phpajax {
 }
 
 class chatupdater extends phpajax {
-    function input() {
-        #   Very important information, we read what is he's last
-        #   chat, and what's him user id, we don't want to send
-        #   him chats again.
-        aread("last");
-        aread("usr_id");
-    }
+    var $inputs=array("last","usr_id");
+    
     function main() {
         global $mysql;
+        
         $last = $this->last;
 
         $sql="select * from chat where userid != '".$this->usr_id."' && postid  > $last order by postid desc limit 10";
@@ -106,6 +94,7 @@ class chatupdater extends phpajax {
 
 $mysql = mysql_connect("localhost","root","");
 mysql_select_db("chat",$mysql);
+
 /* Initiliaze php ajax*/
 phpajax::init();
 
@@ -128,7 +117,7 @@ Cargando...
 <input type=hidden name="usr_id" id = "usr_id" value="<?=md5(time())?>">
 
 <hr>
-<input type="submit" value="show source" onclick="showsource('example2.php')"><br />
+<input type="submit" value="show source" onclick="showsource('example3.php')"><br />
 <div id="source"></div>
 </body>
 </html>

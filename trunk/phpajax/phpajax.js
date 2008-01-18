@@ -40,12 +40,14 @@ function phpajax_execute(url,fnc, params, callback) {
 
         variable = params[i].value ? params[i].value : getObjValue(params[i].source);
         
-        eval("rta." + params[i].name + "= variable; " );
+        try {
+            eval("rta." + params[i].name + "= variable; " );
+        } catch(e) {   }
     }
 
     var success  = function(t) {
         try {
-            //alert(         t.responseText );
+            //alert( t.responseText );
             elem = eval ( "(" + t.responseText  +")");
 
             if ( callback != '') {
@@ -241,7 +243,7 @@ function phpajax_keyaction_deamon(xEvent) {
         case "shift":
         case "alt":
         case "ctrl":
-            pressed= f + "+" + phpajax_keyaction_speacial_keys(xEvent,true);
+            pressed= f + "-" + phpajax_keyaction_speacial_keys(xEvent,true);
             break;
         default:
             pressed=f;
@@ -285,7 +287,7 @@ function phpajax_keyaction_validate(letters) {
         return false;
     }
     letters=letters.toLowerCase();
-    parts = letters.split("+");
+    parts = letters.split("-");
     switch ( parts.length ) {
         case 1:
                 if ( parts[0].length == 1 && parts[0] >= 'a' && parts[0] <= 'z')
