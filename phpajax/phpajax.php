@@ -43,6 +43,9 @@ require(PHPAJAX_DIR."/jsphp.php");
  *  @version 1.0
  */
 class phpajax {
+    var $hotkeys;
+    var $imputs;
+    
     /**
      *  Class constructor
      *
@@ -70,17 +73,15 @@ class phpajax {
              *  request.
              */
             if ( !isset($f)  ) return;
-            
-            /**
-             *  Now we see if the ajax  request is valid,
-             *  and if it cames thought prototype or an iframe.
-             *  If this came thought iframe this is probabily
-             *  because we're reciving a file. Thought iframe
-             *  also the response is diferrent, we need to send
-             * javascript code, and inside the javascript our json
-             *  information.
-             */
-     
+                /**
+                 *  Now we see if the ajax  request is valid,
+                 *  and if it cames thought prototype or an iframe.
+                 *  If this came thought iframe this is probabily
+                 *  because we're reciving a file. Thought iframe
+                 *  also the response is diferrent, we need to send
+                 * javascript code, and inside the javascript our json
+                 *  information.
+                 */
                 $input = json_decode(stripslashes($f),true);
                 if (! ( isset($input['fnc']) && isset($input['version']) )) return;
                 /* create object */
@@ -165,7 +166,6 @@ function phpajax_js($dir="./") {
     echo "<script src=\"${dir}json.js\"></script>\n";
     echo "<script src=\"${dir}phpajax.js\"></script>\n";
     echo "<script src=\"${dir}prototype.js\"></script>\n";
-
     echo "<script type='text/javascript'>\n";
     echo "/** \n";
     echo " * Powered by phpajax - www.phpajax.org \n";
@@ -180,10 +180,14 @@ function phpajax_js($dir="./") {
         print_source("var args = {$name}.arguments;");
         print_source("var input = new Array();");
         /* inputs */
-        $GLOBALS[AJAX_INPUT]='';
-        $obj->input();
-        echo $GLOBALS[AJAX_INPUT];
+        $inputs = & $obj->inputs;
+        if ( is_array($inputs) )
+            foreach($inputs as $input)
+                aread($input);
+        else if ( strlen($inputs) > 0)
+            aread($inputs);
         /* end */
+        
         /* loading */
         $v = & $GLOBALS[AJAX_SHOW_HIDE];
         $print = & $GLOBALS[AJAX_PRINT];
@@ -201,6 +205,7 @@ function phpajax_js($dir="./") {
                 print_source($value);
             }
         }
+            
         /* end */
         $uri = $_SERVER['REQUEST_URI'];
         print_source("phpajax_execute('$uri','$name',input,'$callback');");
@@ -218,6 +223,14 @@ function phpajax_js($dir="./") {
             }
             echo "}\n";
         }
+        
+        /* hotkeys  */
+        $keys = & $obj->hotkeys;
+        if ( is_array($keys) )
+            foreach($keys as $key)
+                print("phpajax_keyaction('$key', function () { {$name}() });\n");
+        else if ( strlen($keys) > 0)
+            print("phpajax_keyaction('$keys', function () { {$name}() });\n");
 
     }
     echo "</script>\n";

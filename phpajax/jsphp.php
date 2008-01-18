@@ -35,9 +35,10 @@
  *  @access private
  */
 function aread($p) {
-    $t = & $GLOBALS[AJAX_INPUT];
+    $t  = "";
     $t .= "\tinput[i] = args && args[i] ? {name:'$p',value:args[i]} : {name:'$p',source:'$p'};\n";
     $t .= "\ti++;\n";
+    echo $t;
 }
 
 /**
@@ -91,6 +92,15 @@ function ashow($obj) {
     $v[]= "ashow('$obj');";
 }
 
+
+
+/**
+ *  Javascript
+ *
+ *  Add javascript into the response.
+ *  
+ *  @param String $js Javascript code
+ */
 function js($js) {
     $v  = & $GLOBALS[AJAX_JS];
     $v[]= "$js";
