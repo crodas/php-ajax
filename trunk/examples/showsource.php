@@ -37,9 +37,8 @@
  *  @package PHP-Ajax-Examples
  */
 class showsource extends phpajax {
-    function input() {
-        aread('location');
-    }
+    var $inputs="location";
+    
     function main() {
         if ( dirname(__FILE__) != dirname( dirname(__FILE__)."/".$this->location) ) {
             alert("Hey hey man!, you can't hack me by this way :D");

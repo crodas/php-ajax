@@ -46,11 +46,9 @@ class example1 extends phpajax {
      *  Read all what is needed from client.
      *
      */
-    function input() {
-        aread("input1");
-        aread("input2");
-    }
-
+    var $inputs=array("input1","input2");
+    var $hotkeys="ctrl-h";
+    
     function loading() {
         aprint('loading', 'Loading...');
         ashow('loading');
@@ -101,10 +99,6 @@ phpajax::init();
 <head>
     <title>Example of how to implement PHP Ajax</title>
 <?php phpajax_js("../phpajax/");?>
-<script>
-phpajax_keyaction("shift+x", function()  { alert("hoolaa"); }  );
-phpajax_keyaction("shift+b", function()  { example1(); }  );
-</script>
 </head>
 <body>
 <div id='loading' style="visibility:hidden;">
@@ -114,7 +108,7 @@ Cargando...
     A = <input type="text" name="input1" id="input1"><br/>
     B = <input type="text" name="input2" id="input2"><br/>
     A * B =  <span id="output1"></span><br/>
-    <input type="submit" value="Click me" onclick="example1()">
+    <input type="submit" value="Click me(control + h)" onclick="example1()">
     <input type="submit" value="40 x 50" onclick="example1(40,50)">
 <hr>
 <input type="submit" value="show source" onclick="showsource('example1.php')"><br />
