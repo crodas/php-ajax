@@ -1,5 +1,4 @@
 #labels Featured
-#The new version
 
 = Introduction =
 
