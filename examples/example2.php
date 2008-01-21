@@ -40,16 +40,9 @@ require("showsource.php");
  *  @package PHP-Ajax-Examples
  */
 class example2 extends phpajax {
-    /**
-     *  Input
-     *
-     *  Read all what is needed from client.
-     *
-     */
-    function input() {
-        aread("file1");
-    }
-
+    var $inputs = "file1";
+    var $hotkeys="shift-u";
+    
     function loading() {
         aprint('loading', 'Loading...');
         ashow('loading');
@@ -90,7 +83,7 @@ Cargando...
 </div>
 
     <input type="file" name="file1" id="file1"><br/>
-   <a href="javascript:example2()">Upload file</a>
+   <a href="javascript:example2()">Upload file (shift-u)</a>
 <hr>
 <input type="submit" value="show source" onclick="showsource('example2.php')"><br />
 <div id="source"></div>
