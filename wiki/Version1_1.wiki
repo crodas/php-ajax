@@ -1,0 +1,59 @@
+#summary One-sentence summary of this page.
+#labels Featured
+
+= Introduction =
+
+PHPAJAX has upgrade to a new version toward an easiest project.
+
+
+= Details =
+
+Here are the most important details of the new version:
+  * Deleting the "inputs()" method instead of this method you can define inputs with the inputs methods.
+  * Adding hotkey support, this mean that you can trigger action when a key (or group of keys) is pressed.
+
+= How to upgrade =
+
+== Old version ==
+{{{
+class foo extends phpajax {
+    function inputs() {
+        aread("input1");
+    }
+}
+
+class bar extends phpajax {
+    function inputs() {
+        aread("input2");
+        aread("input3");
+    }
+}
+}}}
+
+== New Version ==
+{{{
+class foo extends phpajax {
+    var $inputs="input1";
+   
+}
+
+class bar extends phpajax {
+    var $inputs=array("input2","input3");   
+}
+}}}
+
+= New feature, the hotkey =
+You can trigger action when a key (or group of keys) is pressed. The group of keys is control, shift or alt with another key.
+
+{{{
+class foo extends phpajax {
+    var $inputs="input1";
+    var $hotkeys="b";
+   
+}
+
+class bar extends phpajax {
+    var $inputs=array("input2","input3");   
+    var $hotkeys=array("a","shift-b","ctrl-x");
+}
+}}}
