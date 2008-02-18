@@ -1,0 +1,21 @@
+#summary PHPClasses site
+
+= Introduction =
+
+The project PHP Ajax is hosted in the [http://cesars.users.phpclasses.org PHP Classes site]. This mean that the stable version of PHP AJAX you can only download from this *[http://cesars.users.phpclasses.org/browse/package/4295/download/zip.html link]*
+
+
+= Why PHPClasses? =
+
+The [http://cesars.users.phpclasses.org PHP Classes site] offers many benefits to the PHPAjax project, such as:
+  * Keep in track for users who download, that may easy to advice users when a new version is released.
+  * [http://cesars.users.phpclasses.org/discuss/package/4295/ Support forum]
+  * Important awards for innovating projects
+
+= Other downloads =
+
+You can download the actual PHPAjax source using a svn client:
+
+{{{
+svn checkout http://php-ajax.googlecode.com/svn/trunk/ phpajax
+}}}
